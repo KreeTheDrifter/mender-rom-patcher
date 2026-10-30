@@ -43,15 +43,15 @@ jobs:
       - name: Build the test APK
         run: set -o pipefail; gradle --no-daemon :app:assembleDebug 2>&1 | tee -a build.log
 
+      # Without the password this still builds (unsigned), to check the release setup.
       - name: Build the Play Store bundle
-        if: env.MENDER_KEYSTORE_PASSWORD != ''
         run: set -o pipefail; gradle --no-daemon :app:bundleRelease :app:assembleRelease 2>&1 | tee -a build.log
 
       - name: Collect files
         run: |
           mkdir -p out
           cp app/build/outputs/apk/debug/app-debug.apk "out/Mender-test-${GITHUB_RUN_NUMBER}.apk"
-          if [ -f app/build/outputs/bundle/release/app-release.aab ]; then
+          if [ -n "$MENDER_KEYSTORE_PASSWORD" ] && [ -f app/build/outputs/bundle/release/app-release.aab ]; then
             cp app/build/outputs/bundle/release/app-release.aab "out/Mender-play-store-${GITHUB_RUN_NUMBER}.aab"
             cp app/build/outputs/apk/release/app-release.apk "out/Mender-release-${GITHUB_RUN_NUMBER}.apk"
           else
