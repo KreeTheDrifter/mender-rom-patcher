@@ -1,0 +1,90 @@
+# Builds Mender in the cloud on every push (or from the Actions tab: "Run workflow").
+# Results appear under Releases: an APK to install and test on your phone, and the
+# .aab bundle to upload to Google Play.
+#
+# Settings > Secrets and variables > Actions:
+#   Secret   MENDER_KEYSTORE_PASSWORD  password of keystore/upload.jks (needed for the Play bundle)
+#   Variable ADMOB_APP_ID              ca-app-pub-...~...  (until set, test ads are shown)
+#   Variable ADMOB_BANNER_ID           ca-app-pub-.../...
+#   Variable ADMOB_INTERSTITIAL_ID     ca-app-pub-.../...
+name: Build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      MENDER_KEYSTORE_PASSWORD: ${{ secrets.MENDER_KEYSTORE_PASSWORD }}
+      ADMOB_APP_ID: ${{ vars.ADMOB_APP_ID }}
+      ADMOB_BANNER_ID: ${{ vars.ADMOB_BANNER_ID }}
+      ADMOB_INTERSTITIAL_ID: ${{ vars.ADMOB_INTERSTITIAL_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.14.3'
+
+      - name: Test the patch engine
+        run: set -o pipefail; gradle --no-daemon :app:testDebugUnitTest 2>&1 | tee -a build.log
+
+      - name: Build the test APK
+        run: set -o pipefail; gradle --no-daemon :app:assembleDebug 2>&1 | tee -a build.log
+
+      - name: Build the Play Store bundle
+        if: env.MENDER_KEYSTORE_PASSWORD != ''
+        run: set -o pipefail; gradle --no-daemon :app:bundleRelease :app:assembleRelease 2>&1 | tee -a build.log
+
+      - name: Collect files
+        run: |
+          mkdir -p out
+          cp app/build/outputs/apk/debug/app-debug.apk "out/Mender-test-${GITHUB_RUN_NUMBER}.apk"
+          if [ -f app/build/outputs/bundle/release/app-release.aab ]; then
+            cp app/build/outputs/bundle/release/app-release.aab "out/Mender-play-store-${GITHUB_RUN_NUMBER}.aab"
+            cp app/build/outputs/apk/release/app-release.apk "out/Mender-release-${GITHUB_RUN_NUMBER}.apk"
+          else
+            echo "::warning::No Play Store bundle: add the MENDER_KEYSTORE_PASSWORD secret."
+          fi
+          if [ -z "$ADMOB_APP_ID" ]; then
+            echo "::warning::ADMOB_APP_ID isn't set, so this build shows Google's test ads (no earnings)."
+          fi
+
+      - name: Publish as a release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: Mender build ${{ github.run_number }}
+          body: |
+            **Mender-test-${{ github.run_number }}.apk**: install on your phone to try it (always shows test ads; installs next to the store version).
+            **Mender-play-store-${{ github.run_number }}.aab**: upload this to Google Play Console.
+            **Mender-release-${{ github.run_number }}.apk**: the store build as an APK, for checking real ads before uploading.
+          files: out/*
+
+      # Leaves a short build report on the "ci-status" branch, so the result can be
+      # read with plain git (without signing in to the Actions page).
+      - name: Record build status
+        if: always()
+        run: |
+          status="${{ job.status }}"
+          mkdir -p /tmp/ci && cd /tmp/ci
+          {
+            echo "run ${GITHUB_RUN_NUMBER} ${GITHUB_SHA} ${status}"
+            echo
+            grep -E "error:|warning: \[|e: |FAILED|What went wrong|> |BUILD (SUCCESSFUL|FAILED)|tests completed|Exception" "$GITHUB_WORKSPACE/build.log" | head -150 || true
+          } > status.txt
+          git init -q && git checkout -q -b ci-status
+          git -c user.name=ci -c user.email=ci@localhost add status.txt
+          git -c user.name=ci -c user.email=ci@localhost commit -qm "build ${GITHUB_RUN_NUMBER}: ${status}"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" ci-status

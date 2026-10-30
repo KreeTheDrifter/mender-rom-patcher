@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A file with a bandage across it: "mending" a file. Drawn inside the 66dp safe zone. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- file -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M38,30h22l12,12v32a4,4 0,0 1,-4 4h-30a4,4 0,0 1,-4 -4v-40a4,4 0,0 1,4 -4z" />
+    <path
+        android:fillColor="#B7EFDF"
+        android:pathData="M60,30l12,12h-9a3,3 0,0 1,-3 -3z" />
+    <!-- data lines -->
+    <path
+        android:fillColor="#8FD3C1"
+        android:pathData="M40,48h28v3h-28zM40,56h20v3h-20zM40,64h26v3h-26z" />
+    <!-- bandage -->
+    <group
+        android:pivotX="54"
+        android:pivotY="56"
+        android:rotation="-35">
+        <path
+            android:fillColor="#E07A3F"
+            android:pathData="M29,49h50a7,7 0,0 1,7 7a7,7 0,0 1,-7 7h-50a7,7 0,0 1,-7 -7a7,7 0,0 1,7 -7z" />
+        <path
+            android:fillColor="#F4B38A"
+            android:pathData="M46,50h16v12h-16z" />
+        <path
+            android:fillColor="#E07A3F"
+            android:pathData="M50,54.5m-1.3,0a1.3,1.3 0,1 1,2.6 0a1.3,1.3 0,1 1,-2.6 0M58,54.5m-1.3,0a1.3,1.3 0,1 1,2.6 0a1.3,1.3 0,1 1,-2.6 0M54,58m-1.3,0a1.3,1.3 0,1 1,2.6 0a1.3,1.3 0,1 1,-2.6 0" />
+    </group>
+</vector>

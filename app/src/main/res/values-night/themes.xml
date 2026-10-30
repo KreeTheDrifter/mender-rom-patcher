@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Mender" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/brand_light</item>
+        <item name="colorOnPrimary">#00382E</item>
+        <item name="colorPrimaryContainer">#0F5145</item>
+        <item name="colorOnPrimaryContainer">#B7EFDF</item>
+        <item name="colorSecondary">@color/accent</item>
+        <item name="colorTertiary">@color/accent</item>
+    </style>
+    <color name="match_ok">@color/ok_night</color>
+    <color name="match_warn">@color/warn_night</color>
+</resources>

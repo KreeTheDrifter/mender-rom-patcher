@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/remove_ads"
+        android:title="@string/menu_remove_ads"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/restore"
+        android:title="@string/menu_restore"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/privacy_choices"
+        android:title="@string/menu_privacy_choices"
+        android:visible="false"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/privacy_policy"
+        android:title="@string/menu_privacy_policy"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/about"
+        android:title="@string/menu_about"
+        app:showAsAction="never" />
+</menu>

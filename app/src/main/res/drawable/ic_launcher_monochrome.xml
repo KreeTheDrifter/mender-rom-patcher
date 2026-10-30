@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Themed-icon version (Android 13+): only the shape counts, so the bandage alone, with its pad cut out. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:rotation="-35">
+        <path
+            android:fillColor="#FFFFFF"
+            android:fillType="evenOdd"
+            android:pathData="M28,45h52a9,9 0,0 1,9 9a9,9 0,0 1,-9 9h-52a9,9 0,0 1,-9 -9a9,9 0,0 1,9 -9zM45,47.5v13h18v-13z" />
+    </group>
+</vector>

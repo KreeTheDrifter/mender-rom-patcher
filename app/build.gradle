@@ -1,0 +1,89 @@
+plugins {
+    id 'com.android.application'
+}
+
+// Google's sample IDs: they always show test ads. The real ones come from the
+// GitHub repository variables ADMOB_APP_ID and ADMOB_BANNER_ID / ADMOB_INTERSTITIAL_ID
+// (see .github/workflows/build.yml), so nothing private is stored in the code.
+def TEST_APP_ID = 'ca-app-pub-3940256099942544~3347511713'
+def TEST_BANNER_ID = 'ca-app-pub-3940256099942544/9214589741'
+def TEST_INTERSTITIAL_ID = 'ca-app-pub-3940256099942544/1033173712'
+
+def env = { String name, String fallback ->
+    def v = System.getenv(name)
+    return (v == null || v.trim().isEmpty()) ? fallback : v.trim()
+}
+
+def keystoreFile = rootProject.file('keystore/upload.jks')
+def keystorePassword = System.getenv('MENDER_KEYSTORE_PASSWORD')
+
+android {
+    namespace 'io.github.kreethedrifter.mender'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'io.github.kreethedrifter.mender'
+        minSdk 24
+        targetSdk 36
+        // Every cloud build gets a higher number, which Google Play requires for each upload.
+        versionCode env('GITHUB_RUN_NUMBER', '1').toInteger()
+        versionName '1.0.' + env('GITHUB_RUN_NUMBER', '0')
+
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+    }
+
+    signingConfigs {
+        upload {
+            if (keystoreFile.exists() && keystorePassword) {
+                storeFile keystoreFile
+                storePassword keystorePassword
+                keyAlias 'upload'
+                keyPassword keystorePassword
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+            manifestPlaceholders = [admobAppId: TEST_APP_ID]
+            buildConfigField 'String', 'BANNER_ID', "\"${TEST_BANNER_ID}\""
+            buildConfigField 'String', 'INTERSTITIAL_ID', "\"${TEST_INTERSTITIAL_ID}\""
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            manifestPlaceholders = [admobAppId: env('ADMOB_APP_ID', TEST_APP_ID)]
+            buildConfigField 'String', 'BANNER_ID', "\"${env('ADMOB_BANNER_ID', TEST_BANNER_ID)}\""
+            buildConfigField 'String', 'INTERSTITIAL_ID', "\"${env('ADMOB_INTERSTITIAL_ID', TEST_INTERSTITIAL_ID)}\""
+            if (keystoreFile.exists() && keystorePassword) {
+                signingConfig signingConfigs.upload
+            }
+        }
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'androidx.core:core:1.16.0'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'com.google.android.gms:play-services-ads:25.4.0'
+    implementation 'com.google.android.ump:user-messaging-platform:4.0.0'
+    implementation 'com.android.billingclient:billing:8.0.0'
+
+    testImplementation 'junit:junit:4.13.2'
+}

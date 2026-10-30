@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mender</string>
+    <string name="tagline">Apply IPS, BPS and UPS patches to your game files.</string>
+
+    <string name="step_rom">1 · Your ROM</string>
+    <string name="step_patch">2 · The patch</string>
+    <string name="pick_rom">Choose ROM</string>
+    <string name="pick_patch">Choose patch</string>
+    <string name="change">Change</string>
+    <string name="no_rom">No ROM chosen yet. This is the original, unpatched game file you own.</string>
+    <string name="no_patch">No patch chosen yet. Mender reads .ips, .bps and .ups files.</string>
+    <string name="patch_and_save">Patch and save</string>
+    <string name="working">Patching…</string>
+    <string name="reading">Reading…</string>
+    <string name="private_note">Everything happens on your phone. Your files are never uploaded.</string>
+
+    <string name="file_info">%1$s\n%2$s · CRC32 %3$s</string>
+    <string name="patch_info">%1$s\n%2$s patch · %3$s</string>
+    <string name="patch_needs">needs a ROM with CRC32 %1$s</string>
+    <string name="patch_ips">IPS patches don\'t say which ROM they need</string>
+
+    <string name="match_ok">This ROM matches the patch.</string>
+    <string name="match_reverse">This ROM is already patched. Patching it again will restore the original.</string>
+    <string name="match_header">This ROM has a 512-byte header. Mender will remove it if the patch needs that.</string>
+    <string name="match_bad">This ROM doesn\'t match the patch. It\'s probably a different version or region of the game, so patching will likely fail.</string>
+    <string name="match_ips">IPS patches can\'t be checked in advance. Make sure the ROM is the version the patch was made for.</string>
+
+    <string name="done_title">Done!</string>
+    <string name="done_body">Saved %1$s\n%2$s · CRC32 %3$s</string>
+    <string name="error_title">Couldn\'t patch</string>
+    <string name="error_read">Couldn\'t open that file. Try choosing it again.</string>
+    <string name="error_write">Couldn\'t save the patched file. Try a different folder.</string>
+    <string name="error_too_big">That file is too big for Mender (the limit is 256 MB).</string>
+    <string name="error_not_patch">That doesn\'t look like a patch. Choose an .ips, .bps or .ups file.</string>
+    <string name="received_rom">Opened as your ROM</string>
+    <string name="received_patch">Opened as the patch</string>
+    <string name="ok">OK</string>
+
+    <string name="menu_remove_ads">Remove ads</string>
+    <string name="menu_restore">Restore purchase</string>
+    <string name="menu_privacy_choices">Privacy choices</string>
+    <string name="menu_privacy_policy">Privacy policy</string>
+    <string name="menu_about">About</string>
+    <string name="ads_removed">Ads removed. Thank you for supporting Mender!</string>
+    <string name="purchase_restored">Purchase restored. Ads are off.</string>
+    <string name="nothing_to_restore">No purchase found on this Google account.</string>
+    <string name="store_unavailable">Google Play isn\'t available right now. Try again in a moment.</string>
+    <string name="purchase_pending">Your payment is pending. Ads will turn off once it goes through.</string>
+    <string name="remove_ads_title">Remove ads</string>
+    <string name="remove_ads_body">A one-time purchase of %1$s removes all ads from Mender for good, on every device signed in to this Google account.</string>
+    <string name="buy">Buy</string>
+    <string name="not_now">Not now</string>
+
+    <string name="about_body">Mender %1$s\n\nApplies IPS, BPS and UPS patches to files you choose. It does not include or download any games.\n\nOnly patch games you own. Patch files are made by their authors; Mender isn\'t affiliated with any game company.</string>
+    <string name="privacy_url">https://kreethedrifter.github.io/mender-rom-patcher/privacy.html</string>
+</resources>
