@@ -109,6 +109,13 @@ public class MainActivity extends AppCompatActivity implements Billing.Listener 
         FrameLayout adContainer = findViewById(R.id.adContainer);
         ads = new Ads(this, adContainer);
         ads.setOnPrivacyOptionsKnown(this::updateMenu);
+        if (BuildConfig.DEBUG) {
+            TextView adStatus = findViewById(R.id.adStatus);
+            ads.setStatusListener(msg -> {
+                adStatus.setText("Test build · " + msg);
+                adStatus.setVisibility(View.VISIBLE);
+            });
+        }
         billing = new Billing(this, this);
         adFree = billing.cachedAdFree();
         if (!adFree) ads.setEnabled(true);

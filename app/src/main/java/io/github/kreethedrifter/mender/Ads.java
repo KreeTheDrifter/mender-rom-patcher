@@ -40,6 +40,16 @@ final class Ads {
     private boolean enabled = true;
     private long lastInterstitial = 0;
     private Runnable onPrivacyOptionsKnown;
+    private java.util.function.Consumer<String> statusListener = msg -> { };
+
+    /** Debug builds show this text on screen, to see why ads do or don't appear. */
+    void setStatusListener(java.util.function.Consumer<String> l) {
+        statusListener = l;
+    }
+
+    private void status(String msg) {
+        activity.runOnUiThread(() -> statusListener.accept(msg));
+    }
 
     Ads(Activity activity, FrameLayout container) {
         this.activity = activity;
@@ -84,9 +94,12 @@ final class Ads {
         consent.requestConsentInfoUpdate(activity, params,
                 () -> UserMessagingPlatform.loadAndShowConsentFormIfRequired(activity, formError -> {
                     if (onPrivacyOptionsKnown != null) onPrivacyOptionsKnown.run();
+                    if (formError != null) status("Consent form error: " + formError.getMessage());
                     if (consent.canRequestAds()) start();
+                    else status("Ads off: consent not given (status " + consent.getConsentStatus() + ")");
                 }),
                 requestError -> {
+                    status("Consent check failed: " + requestError.getMessage());
                     // offline or similar: use consent gathered on an earlier run, if any
                     if (consent.canRequestAds()) start();
                 });
@@ -96,6 +109,7 @@ final class Ads {
 
     private void start() {
         if (!enabled) return;
+        status("Loading ads…");
         if (started.getAndSet(true)) {
             loadBanner();
             return;
@@ -115,11 +129,13 @@ final class Ads {
             banner.setAdListener(new AdListener() {
                 @Override
                 public void onAdLoaded() {
+                    status("Banner ad loaded");
                     if (enabled) container.setVisibility(View.VISIBLE);
                 }
 
                 @Override
                 public void onAdFailedToLoad(@NonNull LoadAdError error) {
+                    status("Banner failed: code " + error.getCode() + ", " + error.getMessage());
                     container.setVisibility(View.GONE);
                 }
             });

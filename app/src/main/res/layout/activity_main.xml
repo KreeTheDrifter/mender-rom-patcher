@@ -180,6 +180,17 @@
         </LinearLayout>
     </ScrollView>
 
+    <TextView
+        android:id="@+id/adStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="4dp"
+        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:visibility="gone" />
+
     <FrameLayout
         android:id="@+id/adContainer"
         android:layout_width="match_parent"
